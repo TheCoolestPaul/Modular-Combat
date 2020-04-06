@@ -2,13 +2,8 @@ AddCSLuaFile( "cl_init.lua" )
 AddCSLuaFile( "shared.lua" )
 
 include( "shared.lua" )
+include( "player.lua" )
 
-function GM:PlayerConnect(name, ip)
-	PrintMessage(HUD_PRINTTALK, name.." has joined the game.")
-end
-
-function GM:PlayerInitialSpawn( player )
-end
-
-function GM:PlayerAuthed( player, steamid, uniqueid )
+function GM:PlayerInitialSpawn( ply )
+	PrintMessage(HUD_PRINTTALK, ply:Nick().." has joined the game.")
 end
