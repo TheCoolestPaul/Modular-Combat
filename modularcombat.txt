@@ -1,0 +1,23 @@
+"modularcombat"
+{
+	"base"		"base"
+    "title"     "Modular Combat"
+    "version"   "0.0.1"
+    "menusystem"	"1"
+    "workshopid"    ""
+    "settings"
+    {
+        1
+        {
+            "name"      "mc_test"
+            "text"      "Test"
+            "help"      "Default Help Text"
+            "type"      "numeric"
+            "default"   "1"
+        }
+    }
+
+    "icon"  ""
+    "info"  ""
+    "hide"  "0"
+}
