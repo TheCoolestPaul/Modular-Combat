@@ -16,8 +16,4 @@
             "default"   "1"
         }
     }
-
-    "icon"  ""
-    "info"  ""
-    "hide"  "0"
 }

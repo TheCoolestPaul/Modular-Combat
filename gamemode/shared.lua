@@ -20,38 +20,3 @@ function GM:Initialize()
 	self.BaseClass.Initialize( self )
 	print("Finished loading Modular Combat")
 end
-
-
-if CLIENT then
-	local MainFrame = vgui.Create( "DFrame" )
-	MainFrame:SetTitle( "Modular Combat Admin" )
-	MainFrame:SetSize( ScrW(),ScrH() )
-	MainFrame:Center()
-	MainFrame:MakePopup()
-	MainFrame.Paint = function( self, w, h ) -- 'function Frame:Paint( w, h )' works too
-		draw.RoundedBox( 0, 0, 0, w, h, Color( 0, 0, 0, 200 ) ) -- Draw a red box instead of the frame
-	end
-
-
-	local playerCombo = vgui.Create( "DComboBox", MainFrame )
-	playerCombo:SetSize( 200, 20 )
-	playerCombo:SetPos( 500,300 )
-	function playerCombo:OnSelect( index, text, data )
-		local teamCombo = vgui.Create( "DComboBox", MainFrame )
-		teamCombo:SetSize( 100, 20 )
-		teamCombo:SetPos( 700,300 )
-		function teamCombo:OnSelect( index2, text2, data2 )
-			net.Start("ModCombAdminTeamSet")
-			net.WriteInt(data, 11)
-			net.WriteInt(data2, 11)
-			net.SendToServer()
-		end
-		for k,v in pairs(team.GetAllTeams()) do
-			teamCombo:AddChoice(v.Name, k)
-		end
-	end
-	for k,v in pairs(player.GetAll()) do
-		playerCombo:AddChoice(v:Nick(), v:EntIndex())
-	end
-
-end
