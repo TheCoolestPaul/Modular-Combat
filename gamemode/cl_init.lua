@@ -1,5 +1,5 @@
 include( "shared.lua" )
 include( "player.lua" )
-include( "cl_character.lua" )
-include( "cl_admin.lua" )
-include( "cl_hud.lua" )
+include( "menus/cl_character.lua" )
+include( "menus/cl_admin.lua" )
+include( "menus/cl_hud.lua" )
