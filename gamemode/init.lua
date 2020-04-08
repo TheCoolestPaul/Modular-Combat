@@ -1,10 +1,15 @@
 AddCSLuaFile( "cl_init.lua" )
 AddCSLuaFile( "shared.lua" )
 AddCSLuaFile( "player.lua" )
+AddCSLuaFile( "cl_character.lua" )
+AddCSLuaFile( "cl_admin.lua" )
+AddCSLuaFile( "cl_hud.lua" )
 
 include( "shared.lua" )
 include( "player.lua" )
 include( "spawnpoints.lua" )
+include( "playerData.lua" )
+include( "database.lua" )
 
 local CreatorSteamID = {
 	["STEAM_0:1:45153092"] = true, // Paul
