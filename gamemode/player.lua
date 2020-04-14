@@ -14,36 +14,25 @@ plyMeta.activeCharStats = {
 	EXP = 0,
 	EXPNext = 100,
 	Level = 1,
-	Playing = false,
 }
 plyMeta.charStats = {
+	--[[
 	[1] = {
 		Level = 1,
 		Name = "N/A",
 		Team = 1001,
-		model = "",
-	},
-	[2] = {
-		Level = 1,
-		Name = "N/A",
-		Team = 1001,
-		model = "",
-	},
-	[3] = {
-		Level = 1,
-		Name = "N/A",
-		Team = 1001,
-		model = "",
-	},
+		Model = "",
+		mods = {},
+	}
+	]]
 }
 
-function plyMeta:IsPlayingGame()
-	return self.activeCharStats.Playing
+plyMeta.ActiveChar = 0
+function plyMeta:GetActiveChar()
+	return self.ActiveChar
 end
-
-function plyMeta:SetPlaying(bool)
-	self.activeCharStats.Playing = bool
-	self:SetNWBool("IsPlayingGame", bool)
+function plyMeta:SetActiveChar( num )
+	self.ActiveChar = num
 end
 
 function plyMeta:GetModHealthRegenTime()
@@ -75,8 +64,19 @@ function plyMeta:GetModExp()
 end
 
 if SERVER then
+	function plyMeta:LevelUp()
+		self.activeCharStats.Level = self.activeCharStats.Level + 1
+	end
 	function plyMeta:AddModExp( expNum )
 		self.activeCharStats.EXP = self.activeCharStats.EXP + expNum
+		if ( self.activeCharStats.EXP >= self.activeCharStats.EXPNext ) then
+			self:LevelUp()
+			self.activeCharStats.EXP = self.activeCharStats.EXP - self.activeCharStats.EXPNext
+			self.activeCharStats.EXPNext =  100 * self.activeCharStats.Level
+		end
+		self:SetNWInt("EXP", self.activeCharStats.EXP)
+		self:SetNWInt("Level", self.activeCharStats.Level)
+		self:SetNWInt("EXPNext", self.activeCharStats.EXPNext)
 	end
 	function plyMeta:ClearEXP()
 		self.activeCharStats.EXP = 0
@@ -85,19 +85,12 @@ if SERVER then
 		self.activeCharStats.EXP = math.max(0,  self.activeCharStats.EXP - expNum)
 	end
 	function plyMeta:SetModCombatTeam( teamNum )
-		if ( teamNum < 1 or teamNum > 3 ) then // Eliminate out of bound options
+		if not ( teamNum >= 1 and teamNum <= 3 ) then // Eliminate out of bound options
 			return false
 		end
 
 		PrintMessage(HUD_PRINTTALK, self:Nick().." has joined team "..team.GetName(teamNum))
 		self:SetTeam( teamNum )
-
-		if not self:IsSuitEquipped() then
-			self:EquipSuit()
-		end
-		for k,v in pairs(BaseWeapons) do
-			self:Give(v, false)
-		end
 
 		if teamNum == 1 then// Combine Team
 			self:SetPlayerColor( Vector( 0.6,0,0 ) )
@@ -106,7 +99,8 @@ if SERVER then
 		else// Aperature
 			self:SetPlayerColor( Vector( 0,0.5,1.0 ) )
 		end
-		self:SetPlaying(true)
+		self:SetNWBool("ShouldShowHUD", true)
+		self:Spawn()
 		return true
 	end
 
@@ -114,9 +108,27 @@ if SERVER then
 	net.Receive( "FinsihedCharCreation", function( len, ply )
 		local teamNum = net.ReadInt(3)
 		local model = net.ReadString()
+		//local charName = net.ReadString()
 		local charNum = net.ReadInt(3)
-		ply:SetModCombatTeam(teamNum)
-		ply.charStats[charNum].team = teamNum
-		ply.charStats[charNum].model = model
+
+		ply.charStats[charNum] = {}
+		ply.charStats[charNum].Team = teamNum
+		ply.charStats[charNum].Model = model
+		ply:SetActiveChar( charNum )
+		ply:SetModCombatTeam( teamNum )
+		ply:SetModel( model )
+
+	end )
+
+	util.AddNetworkString( "ModCombAdminGod" )
+	net.Receive( "ModCombAdminGod", function( len, ply ) 
+		if not ply:IsAdmin() or not ply:IsSuperAdmin() then return end
+		if ply:HasGodMode() then
+			ply:GodDisable()
+			ply:ChatPrint( "Disabled Godmode" )
+		else
+			ply:GodEnable()
+			ply:ChatPrint( "Enabled Godmode" )
+		end
 	end )
 end

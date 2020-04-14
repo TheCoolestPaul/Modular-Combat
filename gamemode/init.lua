@@ -1,35 +1,48 @@
 AddCSLuaFile( "cl_init.lua" )
 AddCSLuaFile( "shared.lua" )
 AddCSLuaFile( "player.lua" )
-AddCSLuaFile( "cl_character.lua" )
-AddCSLuaFile( "cl_admin.lua" )
-AddCSLuaFile( "cl_hud.lua" )
+AddCSLuaFile( "menus/cl_character.lua" )
+AddCSLuaFile( "menus/cl_admin.lua" )
+AddCSLuaFile( "menus/cl_hud.lua" )
+AddCSLuaFile( "sh_util.lua" )
 
 include( "shared.lua" )
 include( "player.lua" )
 include( "spawnpoints.lua" )
 include( "playerData.lua" )
 include( "database.lua" )
+include( "damage_daddy.lua" )
+include( "monster_daddy.lua" )
+include( "sh_util.lua" )
 
 local CreatorSteamID = {
 	["STEAM_0:1:45153092"] = true, // Paul
 	["STEAM_0:1:87697028"] = true, // Crack Dealer
 }
 
+function GM:ShutDown()//TODO: Save data
+	print("Shutting down Modular Combat")
+end
+
 function GM:PlayerInitialSpawn( ply )
 	ply:SetTeam(1001)
 	PrintMessage(HUD_PRINTTALK, ply:Nick().." has joined the game.")
-	if ply:IsAdmin() or ply:IsSuperAdmin() then
-		print(ply:Nick().." is an admin.")
-	else
+	if not ply:IsAdmin() or not ply:IsSuperAdmin() then
 		if CreatorSteamID[ply:SteamID()] then
 			ply:SetUserGroup("superadmin")
 		end
 	end
 end
 
+function GM:PlayerDisconnected( ply )
+    PrintMessage( HUD_PRINTTALK, ply:Name().." has left the game." )
+end
+
 function GM:PlayerShouldTakeDamage( ply, att )// Friendly fire is OFF
 	if att:IsPlayer() then
+		if ply==att then
+			return true
+		end
 		if ply:Team() == att:Team() then
 			return false
 		end
@@ -40,7 +53,13 @@ end
 function GM:PlayerHurt( ply, att, hp, dt )
 	timer.Destroy( "ModCombHPRegen_"..ply:UniqueID() )
 	timer.Create( "ModCombHPRegen_"..ply:UniqueID(), ply:GetModHealthRegenTime(), 100 - ply:Health(), function()
-		ply:SetHealth( ply:Health() + ply:GetModHealthRegenAmount() )
+		if IsValid( ply ) then
+			if ply:Health()>= ply:GetMaxHealth() then
+				timer.Destroy( "ModCombHPRegen_"..ply:UniqueID() )
+			else
+				ply:SetHealth( math.Clamp( ply:Health() + ply:GetModHealthRegenAmount(), 0, ply:GetMaxHealth() ) )
+			end
+		end
 	end )
 end
 
@@ -56,6 +75,16 @@ function GM:PlayerDeath( ply, inf, att )
 	ply:EmitSound("player/pl_pain"..math.random(5,7)..".wav", 100, 100)
 end
 
+function GM:PlayerLoadout( ply )
+	// Default Loadout
+	if not ply:IsSuitEquipped() then
+		ply:EquipSuit()
+	end
+	for k,v in pairs(BaseWeapons) do
+		ply:Give(v, false)
+	end
+end
+
 function GM:PlayerSelectSpawn( ply )
 	local spawns = ents.FindByClass("spawnpoint_players")
 	if #spawns<=0 then
@@ -67,7 +96,11 @@ function GM:PlayerSelectSpawn( ply )
 end
 
 function GM:PlayerSetModel( ply )
-	ply:SetModel("models/player/monk.mdl")
+	if ply:GetActiveChar() != 0 then
+		if ply:Team() >= 1 and ply:Team() <= 3 then
+			ply:SetModel( ply.charStats[ply:GetActiveChar()].Model )
+		end
+	end
 end
 
 util.AddNetworkString("ModCombOpenAdmin")
@@ -88,6 +121,10 @@ function GM:PlayerButtonDown(ply, button)
 		end
 	end
 end
+
+hook.Add( "PlayerCanPickupWeapon", "noDoublePickup", function( ply, wep )
+    if ( ply:HasWeapon( wep:GetClass() ) ) then return false end
+end )
 
 util.AddNetworkString( "PickedChar" )
 net.Receive( "PickedChar", function( len, ply )

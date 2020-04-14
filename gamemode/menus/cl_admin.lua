@@ -89,9 +89,26 @@ hook.Add( "PlayerBindPress", "PlayerBindPressExample", function( ply, bind, pres
 		local saveSpawns = vgui.Create( "DButton", MainFrame )
 		saveSpawns:SetSize( 200, 50 )
 		saveSpawns:SetPos( 500, 700 )
-		saveSpawns:SetText("Save Spawns")
+		saveSpawns:SetText("SAVE Spawns")
 		function saveSpawns:DoClick()
 			net.Start("ModComb_SaveSpawns")
+			net.SendToServer()
+		end
+		local saveSpawns = vgui.Create( "DButton", MainFrame )
+		saveSpawns:SetSize( 200, 50 )
+		saveSpawns:SetPos( 500, 800 )
+		saveSpawns:SetText("CLEAR Spawns")
+		function saveSpawns:DoClick()
+			net.Start("ModComb_ClearSpawns")
+			net.SendToServer()
+		end
+
+		local godMode = vgui.Create( "DButton", MainFrame )
+		godMode:SetSize( 200, 50 )
+		godMode:SetPos( 900, 500 )
+		godMode:SetText( "Toggle Godmode" )
+		function godMode:DoClick()
+			net.Start( "ModCombAdminGod" )
 			net.SendToServer()
 		end
 	end

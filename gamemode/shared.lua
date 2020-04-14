@@ -9,13 +9,85 @@ team.SetUp(1, "Combie", Color( 0,0,255 ), false)
 team.SetUp(2, "Resistance", Color( 0,255,0 ), false)
 team.SetUp(3, "Aperature", Color( 0,100,255 ), false)
 
+SpawnableMonsters = {
+	[1] = "npc_zombie",
+	[2] = "npc_manhack",
+	[3] = "npc_poisonzombie",
+	[4] = "npc_headcrab",
+	[5] = "npc_fastzombie",
+	[6] = "npc_fastzombie_torso",
+	[7] = "npc_zombie_torso",
+	[8] = "npc_antlion",
+	[9] = "npc_vortigaunt",
+	[10] = "npc_antlionguard",
+}
+MonsterXP = {
+	{ "npc_antlion",  6 },
+	{ "npc_antlionguard", 15 },
+	{ "npc_headcrab_fast", 3 },
+	{ "npc_fastzombie", 5 },
+	{ "npc_fastzombie_torso", 5 },
+	{ "npc_headcrab", 2 },
+	{ "npc_headcrab_black", 3 },
+	{ "npc_headcrab_poison", 3},
+	{ "npc_poisonzombie", 6 },
+	{ "npc_zombie", 5 },
+	{ "npc_zombie_torso", 4 },
+	{ "npc_manhack", 2 },
+	{ "npc_vortigaunt", 5 },
+	{ "npc_rollermine", 2 },
+}
+function GetMonsterBaseEXP( class )
+	for k,v in pairs(MonsterXP) do
+		if v[1] == class then
+			return v[2]
+		end
+	end
+	return false
+end
+
+local function AdminOnlyNoClip( ply )
+	if ply:IsAdmin() or ply:IsSuperAdmin() then
+		return true
+	end
+	return false
+end
+hook.Add( "PlayerNoClip", "AdminOnlyNoClip", AdminOnlyNoClip )
+
 BaseWeapons = {
 	"weapon_pistol",
 	"weapon_357",
 	"weapon_physcannon",
 	"weapon_crowbar",
 }
-
+PickupWeapons = {
+	"weapon_crossbow",
+	"weapon_frag",
+	"weapon_ar2",
+	"weapon_rpg",
+	"weapon_slam",
+	"weapon_shotgun",
+	"weapon_smg1",
+}
+PickupDrops = {
+	"item_battery",
+	"item_healthvial",
+	"item_healthkit",
+}
+PickupAmmo = {
+	"item_ammo_357",
+	"item_ammo_357_large",
+	"item_ammo_ar2",
+	"item_ammo_ar2_large",
+	"item_ammo_ar2_altfire",
+	"item_ammo_crossbow",
+	"item_ammo_pistol",
+	"item_ammo_pistol_large",
+	"item_rpg_round",
+	"item_ammo_smg1",
+	"item_ammo_smg1_large",
+	"item_box_buckshot"
+}
 function GM:Initialize()
 	self.BaseClass.Initialize( self )
 	print("Finished loading Modular Combat")
