@@ -342,110 +342,110 @@ end
 
 net.Receive("ModComb_OpenCharSelection", openCharSelection)
 
-		local CreationFrame = vgui.Create( "DFrame" )
-		CreationFrame:SetTitle( "" )
-		CreationFrame:SetSize( ScrW(),ScrH() )
-		CreationFrame:SetDraggable( false )
-		CreationFrame:Center()
-		CreationFrame:MakePopup()
-		CreationFrame.Paint = function( self, w, h )
-			draw.RoundedBox( 0, 0, 0, w, h, Color( 0, 0, 0, 200 ) )
-		end
-
-		local activeTab = 1 // combine
-		local activeModel = 1 // first model
-
-		local ModelSelectorFrame = vgui.Create( "DFrame", CreationFrame )
-		ModelSelectorFrame:SetTitle( "" )
-		ModelSelectorFrame:SetSize( CreationFrame:GetWide()/2, CreationFrame:GetTall() )
-		ModelSelectorFrame:Dock(RIGHT)
-		ModelSelectorFrame:SetDraggable( false )
-		ModelSelectorFrame:ShowCloseButton( false )
-		ModelSelectorFrame.Paint = function( self, w, h )
-			draw.RoundedBox( 0, 0, 0, w, h, Color( 0, 0, 0, 200 ) )
-		end
-		local ButtonFrame = vgui.Create( "DFrame", ModelSelectorFrame )
-		ButtonFrame:SetTitle( "" )
-		ButtonFrame:SetSize( 0, ScrH()/8 )
-		ButtonFrame:Dock(BOTTOM)
-		ButtonFrame:SetDraggable( false )
-		ButtonFrame:ShowCloseButton( false )
-		ButtonFrame.Paint = function( self, w, h )
-			draw.RoundedBox( 0, 0, 0, w, h, Color( 0, 0, 0, 200 ) )
-		end
-
-		local model = vgui.Create( "DModelPanel", ModelSelectorFrame )
-		model:Dock(FILL)
-		model:SetModel(teamModels[activeTab][activeModel])
-
-		local leftChoice = vgui.Create( "DButton", ButtonFrame )
-		leftChoice:SetText( "<" )
-		leftChoice:Dock(LEFT)
-		function leftChoice:DoClick()
-			if activeModel == 1 then
-				activeModel = table.Count(teamModels[activeTab])
-			else
-				activeModel = activeModel - 1
-			end
-			model:SetModel(teamModels[activeTab][activeModel])
-		end
-		local rightChoice = vgui.Create( "DButton", ButtonFrame )
-		rightChoice:SetText( ">" )
-		rightChoice:Dock(RIGHT)
-		function rightChoice:DoClick()
-			if activeModel == table.Count(teamModels[activeTab]) then
-				activeModel = 1
-			else
-				activeModel = activeModel + 1
-			end
-			model:SetModel(teamModels[activeTab][activeModel])
-		end
-		local confirmButton = vgui.Create( "DButton", ButtonFrame )
-		confirmButton:SetText( "SELECT" )
-		confirmButton:Dock(FILL)
-		function confirmButton:DoClick()
-			CreationFrame:Close()
-			net.Start("FinsihedCharCreation")
-			net.WriteInt(activeTab, 3)
-			net.WriteString(teamModels[activeTab][activeModel])
-			net.WriteInt(charNum, 3)
-			net.SendToServer()
-		end
-
-		local TeamSelectorFrame = vgui.Create( "DFrame", CreationFrame )
-		TeamSelectorFrame:SetTitle( "" )
-		TeamSelectorFrame:SetSize( CreationFrame:GetWide()/2, CreationFrame:GetTall() )
-		TeamSelectorFrame:Dock(LEFT)
-		TeamSelectorFrame:SetDraggable( false )
-		TeamSelectorFrame:ShowCloseButton( false )
-		TeamSelectorFrame.Paint = function( self, w, h )
-			draw.RoundedBox( 0, 0, 0, w, h, Color( 0, 0, 0, 200 ) )
-		end
-
-		local combineButton = vgui.Create( "DButton", TeamSelectorFrame )
-		combineButton:SetText( "Combine" )
-		combineButton:SetPos( 0, TeamSelectorFrame:GetTall()-340 )
-		combineButton:SetSize( TeamSelectorFrame:GetWide(), 100 )
-		function combineButton:DoClick()
-			activeTab = 1
-			activeModel = 1
-			model:SetModel(teamModels[activeTab][activeModel])
-		end
-		local resistanceButton = vgui.Create( "DButton", TeamSelectorFrame )
-		resistanceButton:SetText( "Resistance" )
-		resistanceButton:SetPos( 0, TeamSelectorFrame:GetTall()-240 )
-		resistanceButton:SetSize( TeamSelectorFrame:GetWide(), 100 )
-		function resistanceButton:DoClick()
-			activeTab = 2
-			activeModel = 1
-			model:SetModel(teamModels[activeTab][activeModel])
-		end
-		local aperatureButton = vgui.Create( "DButton", TeamSelectorFrame )
-		aperatureButton:SetText( "Aperature" )
-		aperatureButton:SetPos( 0, TeamSelectorFrame:GetTall()-140 )
-		aperatureButton:SetSize( TeamSelectorFrame:GetWide(), 100 )
-		function aperatureButton:DoClick()
-			activeTab = 3
-			activeModel = 1
-			model:SetModel(teamModels[activeTab][activeModel])
-		end
+		--local CreationFrame = vgui.Create( "DFrame" )
+		--CreationFrame:SetTitle( "" )
+		--CreationFrame:SetSize( ScrW(),ScrH() )
+		--CreationFrame:SetDraggable( false )
+		--CreationFrame:Center()
+		--CreationFrame:MakePopup()
+		--CreationFrame.Paint = function( self, w, h )
+		--	draw.RoundedBox( 0, 0, 0, w, h, Color( 0, 0, 0, 200 ) )
+		--end
+--
+		--local activeTab = 1 // combine
+		--local activeModel = 1 // first model
+--
+		--local ModelSelectorFrame = vgui.Create( "DFrame", CreationFrame )
+		--ModelSelectorFrame:SetTitle( "" )
+		--ModelSelectorFrame:SetSize( CreationFrame:GetWide()/2, CreationFrame:GetTall() )
+		--ModelSelectorFrame:Dock(RIGHT)
+		--ModelSelectorFrame:SetDraggable( false )
+		--ModelSelectorFrame:ShowCloseButton( false )
+		--ModelSelectorFrame.Paint = function( self, w, h )
+		--	draw.RoundedBox( 0, 0, 0, w, h, Color( 0, 0, 0, 200 ) )
+		--end
+		--local ButtonFrame = vgui.Create( "DFrame", ModelSelectorFrame )
+		--ButtonFrame:SetTitle( "" )
+		--ButtonFrame:SetSize( 0, ScrH()/8 )
+		--ButtonFrame:Dock(BOTTOM)
+		--ButtonFrame:SetDraggable( false )
+		--ButtonFrame:ShowCloseButton( false )
+		--ButtonFrame.Paint = function( self, w, h )
+		--	draw.RoundedBox( 0, 0, 0, w, h, Color( 0, 0, 0, 200 ) )
+		--end
+--
+		--local model = vgui.Create( "DModelPanel", ModelSelectorFrame )
+		--model:Dock(FILL)
+		--model:SetModel(teamModels[activeTab][activeModel])
+--
+		--local leftChoice = vgui.Create( "DButton", ButtonFrame )
+		--leftChoice:SetText( "<" )
+		--leftChoice:Dock(LEFT)
+		--function leftChoice:DoClick()
+		--	if activeModel == 1 then
+		--		activeModel = table.Count(teamModels[activeTab])
+		--	else
+		--		activeModel = activeModel - 1
+		--	end
+		--	model:SetModel(teamModels[activeTab][activeModel])
+		--end
+		--local rightChoice = vgui.Create( "DButton", ButtonFrame )
+		--rightChoice:SetText( ">" )
+		--rightChoice:Dock(RIGHT)
+		--function rightChoice:DoClick()
+		--	if activeModel == table.Count(teamModels[activeTab]) then
+		--		activeModel = 1
+		--	else
+		--		activeModel = activeModel + 1
+		--	end
+		--	model:SetModel(teamModels[activeTab][activeModel])
+		--end
+		--local confirmButton = vgui.Create( "DButton", ButtonFrame )
+		--confirmButton:SetText( "SELECT" )
+		--confirmButton:Dock(FILL)
+		--function confirmButton:DoClick()
+		--	CreationFrame:Close()
+		--	net.Start("FinsihedCharCreation")
+		--	net.WriteInt(activeTab, 3)
+		--	net.WriteString(teamModels[activeTab][activeModel])
+		--	net.WriteInt(charNum, 3)
+		--	net.SendToServer()
+		--end
+--
+		--local TeamSelectorFrame = vgui.Create( "DFrame", CreationFrame )
+		--TeamSelectorFrame:SetTitle( "" )
+		--TeamSelectorFrame:SetSize( CreationFrame:GetWide()/2, CreationFrame:GetTall() )
+		--TeamSelectorFrame:Dock(LEFT)
+		--TeamSelectorFrame:SetDraggable( false )
+		--TeamSelectorFrame:ShowCloseButton( false )
+		--TeamSelectorFrame.Paint = function( self, w, h )
+		--	draw.RoundedBox( 0, 0, 0, w, h, Color( 0, 0, 0, 200 ) )
+		--end
+--
+		--local combineButton = vgui.Create( "DButton", TeamSelectorFrame )
+		--combineButton:SetText( "Combine" )
+		--combineButton:SetPos( 0, TeamSelectorFrame:GetTall()-340 )
+		--combineButton:SetSize( TeamSelectorFrame:GetWide(), 100 )
+		--function combineButton:DoClick()
+		--	activeTab = 1
+		--	activeModel = 1
+		--	model:SetModel(teamModels[activeTab][activeModel])
+		--end
+		--local resistanceButton = vgui.Create( "DButton", TeamSelectorFrame )
+		--resistanceButton:SetText( "Resistance" )
+		--resistanceButton:SetPos( 0, TeamSelectorFrame:GetTall()-240 )
+		--resistanceButton:SetSize( TeamSelectorFrame:GetWide(), 100 )
+		--function resistanceButton:DoClick()
+		--	activeTab = 2
+		--	activeModel = 1
+		--	model:SetModel(teamModels[activeTab][activeModel])
+		--end
+		--local aperatureButton = vgui.Create( "DButton", TeamSelectorFrame )
+		--aperatureButton:SetText( "Aperature" )
+		--aperatureButton:SetPos( 0, TeamSelectorFrame:GetTall()-140 )
+		--aperatureButton:SetSize( TeamSelectorFrame:GetWide(), 100 )
+		--function aperatureButton:DoClick()
+		--	activeTab = 3
+		--	activeModel = 1
+		--	model:SetModel(teamModels[activeTab][activeModel])
+		--end

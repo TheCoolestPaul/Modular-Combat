@@ -13,10 +13,10 @@ end
 
 function ENT:Think()
 	if CurTime() < self:GetLastSpawn() then return end
-	local ammoClass = PickupAmmo[math.random(#PickupAmmo)]
+	local ammoClass = PickupAmmo[math.random(#PickupAmmo)][1]
 	if IsValid( self:GetLastEntity() ) then
 		if ammoClass == self:GetLastEntity():GetClass() then
-			ammoClass = PickupAmmo[math.random(#PickupAmmo)]
+			ammoClass = PickupAmmo[math.random(#PickupAmmo)][1]
 		end
 		self:GetLastEntity():Remove()
 	end

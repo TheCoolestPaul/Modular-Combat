@@ -67,9 +67,7 @@ function GM:PlayerDeath( ply, inf, att )
 	timer.Destroy( "ModCombHPRegen_"..ply:UniqueID() )
 	if ply != att then
 		if att:IsPlayer() and IsValid( att ) then
-			if ply.LastHitGroup() and ply.LastHitGroup() == HITGROUP_HEAD then
-			else
-			end
+			print("player killed player")
 		end
 	end
 	ply:EmitSound("player/pl_pain"..math.random(5,7)..".wav", 100, 100)
@@ -77,11 +75,13 @@ end
 
 function GM:PlayerLoadout( ply )
 	// Default Loadout
-	if not ply:IsSuitEquipped() then
-		ply:EquipSuit()
-	end
-	for k,v in pairs(BaseWeapons) do
-		ply:Give(v, false)
+	if ply:Team() > 0 and ply:Team() < 4 then
+		if not ply:IsSuitEquipped() then
+			ply:EquipSuit()
+		end
+		for k,v in pairs(BaseWeapons) do
+			ply:Give(v, false)
+		end
 	end
 end
 
@@ -124,6 +124,24 @@ end
 
 hook.Add( "PlayerCanPickupWeapon", "noDoublePickup", function( ply, wep )
     if ( ply:HasWeapon( wep:GetClass() ) ) then return false end
+end )
+
+hook.Add( "PlayerCanPickupItem", "limitMaxAmmo", function( ply, item )// TODO: Finish
+	local isAmmo = false
+	local ammoType = nil
+	for k,v in pairs(PickupAmmo) do
+		if v[1] == item:GetClass() then
+			isAmmo = true
+			ammoType = v[2]
+			break
+		end
+	end
+	if not isAmmo then return end
+	if ply:GetAmmoCount(ammoType) >= ply.activeCharStats.mods.maxAmmo[ammoType] then
+		return false
+	else
+		return true // NEEDS A math.Clamp(addedAmmo, 0, ply.activeCharStats.mods.maxAmmo[ammoType])
+	end
 end )
 
 util.AddNetworkString( "PickedChar" )

@@ -1,4 +1,11 @@
 MonsterSpawns = {}
+spawnpoints = {
+	players = {},
+	monsters = {},
+	weapons = {},
+	ammo = {},
+	drops = {},
+}
 function AddSpawn( typ, pos, ang )
 	local entClass = "spawnpoint_players"
 	local monster = false
@@ -18,6 +25,7 @@ function AddSpawn( typ, pos, ang )
 	ent:SetAngles(ang)
 	ent:Spawn()
 	ent:DropToFloor()
+	table.insert(spawnpoints[typ], ent)
 	if monster then
 		table.insert(MonsterSpawns, ent)
 	end
@@ -48,78 +56,82 @@ function ClearSpawnData()
 	if file.Exists( "modular_comat/map_data/" ..string.lower(game.GetMap()).. ".txt", "DATA" ) then
 		file.Delete( "modular_comat/map_data/" ..string.lower(game.GetMap()).. ".txt" )
 	end
-	for k, v in pairs(spawnpointsManager.spawnpoints.Players) do
-		if IsValid(k) then
-			k:Remove()
+	table.Empty(MonsterSpawns)
+	for k, v in pairs(spawnpoints.players) do
+		if IsValid(v) then
+			v:Remove()
 		end
 	end
-	for k, v in pairs(spawnpointsManager.spawnpoints.Monsters) do
-		if IsValid(k) then
-			k:Remove()
+	for k, v in pairs(spawnpoints.monsters) do
+		if IsValid(v) then
+			v:Remove()
 		end
 	end
-	for k, v in pairs(spawnpointsManager.spawnpoints.Weapons) do
-		if IsValid(k) then
-			k:Remove()
+	for k, v in pairs(spawnpoints.weapons) do
+		if IsValid(v) then
+			v:Remove()
 		end
 	end
-	for k, v in pairs(spawnpointsManager.spawnpoints.Ammo) do
-		if IsValid(k) then
-			k:Remove()
+	for k, v in pairs(spawnpoints.ammo) do
+		if IsValid(v) then
+			v:Remove()
 		end
 	end
-	for k, v in pairs(spawnpointsManager.spawnpoints.Drops) do
-		if IsValid(k) then
-			k:Remove()
+	for k, v in pairs(spawnpoints.drops) do
+		if IsValid(v) then
+			v:Remove()
 		end
+	end
+	for k,tab in pairs(spawnpoints) do
+		table.Empty(tab)
 	end
 	print("All of the spawns were deleted!")
 end
 
 function SaveSpawns()
     local data = {}
-	for k, v in pairs(spawnpointsManager.spawnpoints.Players) do
-		if IsValid(k) then
+	for k, v in pairs(spawnpoints.players) do
+		if IsValid(v) then
 			table.insert(data, {
 				type = "players",
-				pos = k:GetPos(),
-				ang = k:GetAngles()
+				pos = v:GetPos(),
+				ang = v:GetAngles()
 			})
 		end
 	end
-	for k, v in pairs(spawnpointsManager.spawnpoints.Monsters) do
-		if IsValid(k) then
+	for k, v in pairs(spawnpoints.monsters) do
+		if IsValid(v) then
 			table.insert(data, {
 				type = "monsters",
-				pos = k:GetPos(),
-				ang = k:GetAngles()
+				pos = v:GetPos(),
+				ang = v:GetAngles()
 			})
 		end
 	end
-	for k, v in pairs(spawnpointsManager.spawnpoints.Weapons) do
-		if IsValid(k) then
+	for k, v in pairs(spawnpoints.weapons) do
+		if IsValid(v) then
 			table.insert(data, {
 				type = "weapons",
-				pos = k:GetPos(),
-				ang = k:GetAngles()
+				pos = v:GetPos(),
+				ang = v:GetAngles()
 			})
 		end
 	end
-	for k, v in pairs(spawnpointsManager.spawnpoints.Ammo) do
-		if IsValid(k) then
+	for k, v in pairs(spawnpoints.ammo) do
+		if IsValid(v) then
 			table.insert(data, {
 				type = "ammo",
-				pos = k:GetPos(),
-				ang = k:GetAngles()
+				pos = v:GetPos(),
+				ang = v:GetAngles()
 			})
 		end
 	end
-	for k, v in pairs(spawnpointsManager.spawnpoints.Drops) do
-		if IsValid(k) then
+	for k, v in pairs(spawnpoints.drops) do
+		if IsValid(v) then
 			table.insert(data, {
 				type = "drops",
-				pos = k:GetPos(),
-				ang = k:GetAngles()
+				pos = v:GetPos(),
+				ang = v:GetAngles()
 			})
 		end
 	end

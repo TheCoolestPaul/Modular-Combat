@@ -75,18 +75,19 @@ PickupDrops = {
 	"item_healthkit",
 }
 PickupAmmo = {
-	"item_ammo_357",
-	"item_ammo_357_large",
-	"item_ammo_ar2",
-	"item_ammo_ar2_large",
-	"item_ammo_ar2_altfire",
-	"item_ammo_crossbow",
-	"item_ammo_pistol",
-	"item_ammo_pistol_large",
-	"item_rpg_round",
-	"item_ammo_smg1",
-	"item_ammo_smg1_large",
-	"item_box_buckshot"
+	{ "item_ammo_357", "357" },
+	{ "item_ammo_357_large", "357" },
+	{ "item_ammo_ar2", "AR2" },
+	{ "item_ammo_ar2_large", "AR2" },
+	{ "item_ammo_ar2_altfire", "AR2AltFire" },
+	{ "item_ammo_crossbow", "XBowBolt" },
+	{ "item_ammo_pistol", "Pistol" },
+	{ "item_ammo_pistol_large", "Pistol" },
+	{ "item_rpg_round", "RPG_Round" },
+	{ "item_ammo_smg1", "SMG1" },
+	{ "item_ammo_smg1_large", "SMG1" },
+	{ "item_ammo_smg1_grenade", "SMG1_Grenade" },
+	{ "item_box_buckshot", "Buckshot" },
 }
 function GM:Initialize()
 	self.BaseClass.Initialize( self )
