@@ -5,8 +5,8 @@ hook.Add( "PlayerBindPress", "PlayerBindPressExample", function( ply, bind, pres
 		MainFrame:SetSize( ScrW(),ScrH() )
 		MainFrame:Center()
 		MainFrame:MakePopup()
-		MainFrame.Paint = function( self, w, h ) -- 'function Frame:Paint( w, h )' works too
-			draw.RoundedBox( 0, 0, 0, w, h, Color( 0, 0, 0, 200 ) ) -- Draw a red box instead of the frame
+		MainFrame.Paint = function( self, w, h )
+			draw.RoundedBox( 0, 0, 0, w, h, Color( 0, 0, 0, 200 ) )
 		end
 		
 		local playerCombo = vgui.Create( "DComboBox", MainFrame )
@@ -94,13 +94,34 @@ hook.Add( "PlayerBindPress", "PlayerBindPressExample", function( ply, bind, pres
 			net.Start("ModComb_SaveSpawns")
 			net.SendToServer()
 		end
-		local saveSpawns = vgui.Create( "DButton", MainFrame )
-		saveSpawns:SetSize( 200, 50 )
-		saveSpawns:SetPos( 500, 800 )
-		saveSpawns:SetText("CLEAR Spawns")
-		function saveSpawns:DoClick()
-			net.Start("ModComb_ClearSpawns")
-			net.SendToServer()
+		local clearSpawns = vgui.Create( "DButton", MainFrame )
+		clearSpawns:SetSize( 200, 50 )
+		clearSpawns:SetPos( 500, 800 )
+		clearSpawns:SetText("CLEAR Spawns")
+		function clearSpawns:DoClick()
+			local confirmFrame = vgui.Create( "DFrame", MainFrame )
+			confirmFrame:SetTitle( "Confirm Clear Spawns" )
+			confirmFrame:SetSize( ScrW(),ScrH() )
+			confirmFrame:Center()
+			confirmFrame:MakePopup()
+			confirmFrame.Paint = function( self, w, h )
+				draw.RoundedBox( 0, 0, 0, w, h, Color( 0, 0, 0, 200 ) )
+			end
+			local confirmButton = vgui.Create( "DButton", confirmFrame )
+			confirmButton:SetSize( 200, 50 )
+			confirmButton:SetPos( ScrW()/2-200, ScrH()/2 )
+			confirmButton:SetText("CONFIRM")
+			function confirmButton:DoClick()
+				net.Start("ModComb_ClearSpawns")
+				net.SendToServer()
+			end
+			local closeButton = vgui.Create( "DButton", confirmFrame )
+			closeButton:SetSize( 200, 50 )
+			closeButton:SetPos( ScrW()/2+200, ScrH()/2 )
+			closeButton:SetText("CANCEL")
+			function closeButton:DoClick()
+				confirmFrame:Close()
+			end
 		end
 
 		local godMode = vgui.Create( "DButton", MainFrame )
@@ -111,5 +132,22 @@ hook.Add( "PlayerBindPress", "PlayerBindPressExample", function( ply, bind, pres
 			net.Start( "ModCombAdminGod" )
 			net.SendToServer()
 		end
+		local playerESP = vgui.Create( "DButton", MainFrame )
+		playerESP:SetSize( 200, 50 )
+		playerESP:SetPos( 900, 550 )
+		playerESP:SetText( "Toggle Player ESP" )
+		function playerESP:DoClick()
+			net.Start( "ModCombAdminPlayerESP" )
+			net.SendToServer()
+		end
+		local spawnsESP = vgui.Create( "DButton", MainFrame )
+		spawnsESP:SetSize( 200, 50 )
+		spawnsESP:SetPos( 900, 600 )
+		spawnsESP:SetText( "Toggle Spawn ESP" )
+		function spawnsESP:DoClick()
+			net.Start( "ModCombAdminSpawnersESP" )
+			net.SendToServer()
+		end
+
 	end
 end )

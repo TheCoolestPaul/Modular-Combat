@@ -30,7 +30,7 @@ hook.Add( "OnNPCKilled", "Damage_Daddy_Killed", function( npc, att, _ )
 				if baseEXP then
 					baseEXP = baseEXP + (baseEXP * (0.1*npc:GetNWInt("Level", 1) ) )
 					local expTotal = math.Max(0, math.Round( ( dmgPerc ) * baseEXP ) )
-					ent:AddModExp( expTotal )
+					AddModExp( ent, expTotal )
 					ent:ChatPrint("You dealt "..math.Round( dmgPerc*100 ).."% of the damage to "..npc:GetClass().." LVL "..monsterLevel.." and earned "..expTotal.." exp")
 				else
 					print("error finding EXP for "..npc:GetClass())
@@ -42,7 +42,7 @@ hook.Add( "OnNPCKilled", "Damage_Daddy_Killed", function( npc, att, _ )
 		local monsterLevel = npc:GetNWInt("Level", 1)
 		if baseEXP then
 			baseEXP = math.Round( baseEXP + (baseEXP * (0.1*npc:GetNWInt("Level", 1) ) ) )
-			att:AddModExp( baseEXP )
+			AddModExp( att, baseEXP )
 			att:ChatPrint("You dealt 100% of the damage to "..npc:GetClass().." LVL "..monsterLevel.." and earned "..baseEXP.." exp")
 		else
 			print("error finding EXP for "..npc:GetClass())

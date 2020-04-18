@@ -4,10 +4,10 @@ GM.Email = "N/A"
 GM.Website = "N/A"
 GM.Author = "TheCoolestPaul"
 
-team.SetUp(0, "Monsters", Color( 255,0,0 ), false)
-team.SetUp(1, "Combie", Color( 0,0,255 ), false)
-team.SetUp(2, "Resistance", Color( 0,255,0 ), false)
-team.SetUp(3, "Aperature", Color( 0,100,255 ), false)
+team.SetUp( 0, "Monsters", Color( 255,0,0 ), false )
+team.SetUp( 1, "Combie", Color( 0,0,255 ), false )
+team.SetUp( 2, "Resistance", Color( 0,255,0 ), false )
+team.SetUp( 3, "Aperature", Color( 0,100,255 ), false )
 
 SpawnableMonsters = {
 	[1] = "npc_zombie",
@@ -42,6 +42,13 @@ function GetMonsterBaseEXP( class )
 		if v[1] == class then
 			return v[2]
 		end
+	end
+	return false
+end
+
+function IsSpawner( ent )
+	if ent:GetClass() == "spawnpoint_ammo" or ent:GetClass() == "spawnpoint_drops" or ent:GetClass() == "spawnpoint_monsters" or ent:GetClass() == "spawnpoint_players" or ent:GetClass() == "spawnpoint_weapons" then
+		return true
 	end
 	return false
 end

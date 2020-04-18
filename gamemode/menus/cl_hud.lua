@@ -16,6 +16,32 @@ function DrawLevels()
 		// BEGIN: Armor
 
 		// BEGIN: HEV Battery
+
+		// BEGIN: Admin ESP
+		if LocalPlayer():GetNWBool("ModCombAdminPlayerESP", false) and ( LocalPlayer():IsAdmin() or LocalPlayer():IsSuperAdmin() ) then
+			for _,v in ipairs ( player.GetAll() ) do
+				if v:Nick() != LocalPlayer():Nick() then
+					local pos = v:GetPos() + Vector(0,0,90)
+					pos = pos:ToScreen()
+					if v:Health() > 0 then
+						color = Color(255,255,255,255)
+					elseif v:Health() < 1 then
+						color = Color(0,0,0,255)
+						draw.DrawText("*Dead*", "DermaDefault", pos.x, pos.y + 10, color,1)
+					end
+					draw.DrawText(v:Nick(), "DermaDefault", pos.x, pos.y - 10, color,1)
+				end
+			end
+		end
+		if LocalPlayer():GetNWBool("ModCombAdminSpawnersESP", false) and ( LocalPlayer():IsAdmin() or LocalPlayer():IsSuperAdmin() ) then
+			for _,v in ipairs ( ents.GetAll() ) do
+				if IsSpawner(v) then
+					local pos = v:GetPos() + Vector(0,0,10)
+					pos = pos:ToScreen()
+					draw.DrawText(v:GetClass(), "DermaDefault", pos.x, pos.y - 10, color,1)
+				end
+			end
+		end
 	end
 end
 hook.Add( "HUDPaint", "Draw_ModCombHUD", DrawLevels )

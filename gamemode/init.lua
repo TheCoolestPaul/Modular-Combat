@@ -20,12 +20,22 @@ local CreatorSteamID = {
 	["STEAM_0:1:87697028"] = true, // Crack Dealer
 }
 
-function GM:ShutDown()//TODO: Save data
+function GM:Initialize()
+	self.BaseClass.Initialize( self )
+	ModularCombatDB:databaseCheck()
+	print("Finished loading Modular Combat Serverside")
+end
+
+function GM:ShutDown()
+	for k,v in pairs(player.GetAll()) do
+		ModularCombatDB:savePlayerData( v )
+	end
 	print("Shutting down Modular Combat")
 end
 
 function GM:PlayerInitialSpawn( ply )
 	ply:SetTeam(1001)
+	ply:AllowFlashlight(true)
 	PrintMessage(HUD_PRINTTALK, ply:Nick().." has joined the game.")
 	if not ply:IsAdmin() or not ply:IsSuperAdmin() then
 		if CreatorSteamID[ply:SteamID()] then
@@ -35,7 +45,12 @@ function GM:PlayerInitialSpawn( ply )
 end
 
 function GM:PlayerDisconnected( ply )
+	ModularCombatDB:savePlayerData( ply )
     PrintMessage( HUD_PRINTTALK, ply:Name().." has left the game." )
+    local players = player.GetHumans()
+    if #players > 0 then return end
+    print("Cleaning up the server since everyone left.")
+    game.CleanUpMap()
 end
 
 function GM:PlayerShouldTakeDamage( ply, att )// Friendly fire is OFF
@@ -76,12 +91,15 @@ end
 function GM:PlayerLoadout( ply )
 	// Default Loadout
 	if ply:Team() > 0 and ply:Team() < 4 then
+		ply:GodDisable()
 		if not ply:IsSuitEquipped() then
 			ply:EquipSuit()
 		end
 		for k,v in pairs(BaseWeapons) do
 			ply:Give(v, false)
 		end
+	else
+		ply:GodEnable()
 	end
 end
 
@@ -96,9 +114,9 @@ function GM:PlayerSelectSpawn( ply )
 end
 
 function GM:PlayerSetModel( ply )
-	if ply:GetActiveChar() != 0 then
+	if ply:GetActiveCharNum() != nil then
 		if ply:Team() >= 1 and ply:Team() <= 3 then
-			ply:SetModel( ply.charStats[ply:GetActiveChar()].Model )
+			ply:SetModel( playerData[ply:SteamID()][ply:GetActiveCharNum()].Model )
 		end
 	end
 end
@@ -113,40 +131,15 @@ net.Receive("ModCombAdminTeamSet", function(len, ply)
 	end
 end)
 
-function GM:PlayerButtonDown(ply, button)
-	if (button==KEY_F1) then
-		if (ply:IsAdmin() or ply:IsSuperAdmin()) then
-			net.Start("ModCombOpenAdmin")
-			net.Send(ply)
-		end
-	end
-end
+--function GM:PlayerButtonDown(ply, button)
+--	if (button==KEY_F1) then
+--		if (ply:IsAdmin() or ply:IsSuperAdmin()) then
+--			net.Start("ModCombOpenAdmin")
+--			net.Send(ply)
+--		end
+--	end
+--end
 
 hook.Add( "PlayerCanPickupWeapon", "noDoublePickup", function( ply, wep )
     if ( ply:HasWeapon( wep:GetClass() ) ) then return false end
-end )
-
-hook.Add( "PlayerCanPickupItem", "limitMaxAmmo", function( ply, item )// TODO: Finish
-	local isAmmo = false
-	local ammoType = nil
-	for k,v in pairs(PickupAmmo) do
-		if v[1] == item:GetClass() then
-			isAmmo = true
-			ammoType = v[2]
-			break
-		end
-	end
-	if not isAmmo then return end
-	if ply:GetAmmoCount(ammoType) >= ply.activeCharStats.mods.maxAmmo[ammoType] then
-		return false
-	else
-		return true // NEEDS A math.Clamp(addedAmmo, 0, ply.activeCharStats.mods.maxAmmo[ammoType])
-	end
-end )
-
-util.AddNetworkString( "PickedChar" )
-net.Receive( "PickedChar", function( len, ply )
-	local teamNum = net.ReadInt( 11 )
-	local charNum = net.ReadInt( 3 )
-	ply:SetModCombatTeam( teamNum )
 end )

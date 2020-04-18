@@ -20,14 +20,12 @@ end
 
 local function randomMonsterSpawner()
 	local pickedSpawner = MonsterSpawns[math.random(#MonsterSpawns)]
-	local shits = ents.FindInSphere(pickedSpawner:GetPos(), 100)
+	local shits = ents.FindInSphere(pickedSpawner:GetPos(), 2000)
 	for k,ent in pairs(shits) do
 		if ent:IsPlayer() then
-			print("Player is too close")
 			return MonsterSpawns[math.random(#MonsterSpawns)] // picks a dif spawn if player is near
 		end
 	end
-	print("player far enough")
 	return pickedSpawner
 end
 
@@ -39,8 +37,14 @@ local function spawnAMonster(spawnNum)
 	monster:SetNWInt("Level", monsterLevel)
 	monster:SetMaxHealth( monster:GetMaxHealth() + ( monster:GetMaxHealth()*( 0.1*monster:GetNWInt("Level", 1) ) ) )
 	monster:SetHealth(monster:GetMaxHealth())
-	monster:SetPos( spawn:GetPos() )
+	monster:SetPos( Vector( spawn:GetPos().x, spawn:GetPos().y, spawn:GetPos().z + 10 ) )
 	monster:SetAngles( spawn:GetAngles() )
+	if monsterClass == "npc_vortigaunt" then
+		monster:AddRelationship("player D_HT 99")
+	end
+	for k,v in pairs( MonsterXP ) do
+		monster:AddRelationship(v[1].." D_LI 99")
+	end
 	monster:Spawn()
 	MonsterCount = MonsterCount + 1
 end

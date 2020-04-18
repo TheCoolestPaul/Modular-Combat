@@ -1,101 +1,36 @@
 local plyMeta = FindMetaTable("Player")
-
-plyMeta.activeCharStats = {
-	mods = {
-		healthRegen = {
-			seconds = 20,
-			amount = 1,
-		},
-		armorRegen = {
-			seconds = 20,
-			amount = 0,
-		},
-		maxAmmo = {
-			["Pistol"] = 180,
-			["357"] = 36,
-			["SMG1"] = 180,
-			["AR2"] = 120, // Pulse Rifle
-			["Buckshot"] = 24, 
-			["XBowBolt"] = 15, // Crossbow
-			["Grenade"] = 3,
-			["SMG1_Grenade"] = 3,
-			["slam"] = 3,
-			["RPG_Round"] = 3,
-			["AR2AltFire"] = 3, // Pulse Rifle Ball
-		},
-	},
-	EXP = 0,
-	EXPNext = 100,
-	Level = 1,
-}
-plyMeta.charStats = {
-	--[[
-	[1] = {
-		Level = 1,
-		Name = "N/A",
-		Team = 1001,
-		Model = "",
-		mods = {},
-	}
-	]]
-}
-
-plyMeta.ActiveChar = 0
-function plyMeta:GetActiveChar()
-	return self.ActiveChar
-end
-function plyMeta:SetActiveChar( num )
-	self.ActiveChar = num
-end
-
-function plyMeta:GetModHealthRegenTime()
-	return self.activeCharStats.mods.healthRegen.seconds
-end
-
-function plyMeta:GetModHealthRegenAmount()
-	return self.activeCharStats.mods.healthRegen.amount
-end
-
-function plyMeta:GetModArmorRegenTime()
-	return self.activeCharStats.mods.armorRegen.seconds
-end
-
-function plyMeta:GetModArmorRegenAmount()
-	return self.activeCharStats.mods.armorRegen.amount
-end
-
-function plyMeta:GetModLevel()
-	return self.activeCharStats.Level
-end
-
-function plyMeta:GetModExpNext()
-	return self.activeCharStats.EXPNext
-end
-
-function plyMeta:GetModExp()
-	return self.activeCharStats.EXP
-end
+AccessorFunc(plyMeta, "active_char", "ActiveCharNum", FORCE_NUMBER)
 
 if SERVER then
-	function plyMeta:LevelUp()
-		self.activeCharStats.Level = self.activeCharStats.Level + 1
-	end
-	function plyMeta:AddModExp( expNum )
-		self.activeCharStats.EXP = self.activeCharStats.EXP + expNum
-		if ( self.activeCharStats.EXP >= self.activeCharStats.EXPNext ) then
-			self:LevelUp()
-			self.activeCharStats.EXP = self.activeCharStats.EXP - self.activeCharStats.EXPNext
-			self.activeCharStats.EXPNext =  100 * self.activeCharStats.Level
+	playerData = {
+		--[[ 
+		["STEAMID"] = {
+			[charNum] = {
+				Level = 1,
+				EXP = 0,
+				AvaMods = 0,
+				Name = charName,
+				Team = teamNum,
+				Model = model,
+				mods = {},
+			},
+		},
+		]]--
+	}
+	function AddModExp( ply, expNum )
+		if IsValid( ply ) then
+			local newEXP = playerData[ply:SteamID()][ply:GetActiveCharNum()].EXP + expNum
+			if ( newEXP >= playerData[ply:SteamID()][ply:GetActiveCharNum()].Level*100 ) then
+				playerData[ply:SteamID()][ply:GetActiveCharNum()].EXP = newEXP - playerData[ply:SteamID()][ply:GetActiveCharNum()].Level*100
+				playerData[ply:SteamID()][ply:GetActiveCharNum()].Level = playerData[ply:SteamID()][ply:GetActiveCharNum()].Level + 1
+				playerData[ply:SteamID()][ply:GetActiveCharNum()].AvaMods = playerData[ply:SteamID()][ply:GetActiveCharNum()].AvaMods + 5
+				ply:SetNWInt( "Level", playerData[ply:SteamID()][ply:GetActiveCharNum()].Level )
+				ply:SetNWInt( "EXPNext", playerData[ply:SteamID()][ply:GetActiveCharNum()].Level*100 )
+			else
+				playerData[ply:SteamID()][ply:GetActiveCharNum()].EXP = newEXP
+			end
+			ply:SetNWInt( "EXP", playerData[ply:SteamID()][ply:GetActiveCharNum()].EXP )
 		end
-		self:SetNWInt("EXP", self.activeCharStats.EXP)
-		self:SetNWInt("Level", self.activeCharStats.Level)
-		self:SetNWInt("EXPNext", self.activeCharStats.EXPNext)
-	end
-	function plyMeta:ClearEXP()
-		self.activeCharStats.EXP = 0
-	end
-	function plyMeta:RemoveModExp( expNum )
-		self.activeCharStats.EXP = math.max(0,  self.activeCharStats.EXP - expNum)
 	end
 	function plyMeta:SetModCombatTeam( teamNum )
 		if not ( teamNum >= 1 and teamNum <= 3 ) then // Eliminate out of bound options
@@ -117,17 +52,37 @@ if SERVER then
 		return true
 	end
 
+	util.AddNetworkString( "PickedChar" )
+	net.Receive( "PickedChar", function( len, ply )
+		local teamNum = net.ReadInt( 11 )
+		local charNum = net.ReadInt( 3 )
+		ply:SetActiveCharNum( charNum )
+		ply:SetModCombatTeam( teamNum )
+		ply:SetNWInt( "Level", playerData[ply:SteamID()][ply:GetActiveCharNum()].Level )
+		ply:SetNWInt( "EXPNext", playerData[ply:SteamID()][ply:GetActiveCharNum()].Level*100 )
+		ply:SetNWInt( "EXP", playerData[ply:SteamID()][ply:GetActiveCharNum()].EXP )
+	end )
+
 	util.AddNetworkString( "FinsihedCharCreation" )
 	net.Receive( "FinsihedCharCreation", function( len, ply )
 		local teamNum = net.ReadInt(3)
 		local model = net.ReadString()
-		//local charName = net.ReadString()
+		local charName = net.ReadString()
 		local charNum = net.ReadInt(3)
-
-		ply.charStats[charNum] = {}
-		ply.charStats[charNum].Team = teamNum
-		ply.charStats[charNum].Model = model
-		ply:SetActiveChar( charNum )
+		local sid = ply:SteamID()
+		
+		if playerData[sid] == nil then
+			playerData[sid] = {}
+		end
+		playerData[sid][charNum] = {}
+		playerData[sid][charNum].Level = 1
+		playerData[sid][charNum].EXP = 0
+		playerData[sid][charNum].AvaMods = 0
+		playerData[sid][charNum].Name = charName
+		playerData[sid][charNum].Team = teamNum
+		playerData[sid][charNum].Model = model
+		playerData[sid][charNum].mods = {}
+		ply:SetActiveCharNum( charNum )
 		ply:SetModCombatTeam( teamNum )
 		ply:SetModel( model )
 
@@ -142,6 +97,30 @@ if SERVER then
 		else
 			ply:GodEnable()
 			ply:ChatPrint( "Enabled Godmode" )
+		end
+	end )
+
+	util.AddNetworkString( "ModCombAdminPlayerESP" )
+	net.Receive( "ModCombAdminPlayerESP", function( len, ply ) 
+		if not ply:IsAdmin() or not ply:IsSuperAdmin() then return end
+		if ply:GetNWBool("ModCombAdminPlayerESP", false) then
+			ply:SetNWBool("ModCombAdminPlayerESP", false)
+			ply:ChatPrint( "Disabled Player ESP" )
+		else
+			ply:SetNWBool("ModCombAdminPlayerESP", true)
+			ply:ChatPrint( "Enabled Player ESP" )
+		end
+	end )
+
+	util.AddNetworkString( "ModCombAdminSpawnersESP" )
+	net.Receive( "ModCombAdminSpawnersESP", function( len, ply ) 
+		if not ply:IsAdmin() or not ply:IsSuperAdmin() then return end
+		if ply:GetNWBool("ModCombAdminSpawnersESP", false) then
+			ply:SetNWBool("ModCombAdminSpawnersESP", false)
+			ply:ChatPrint( "Disabled Spawner ESP" )
+		else
+			ply:SetNWBool("ModCombAdminSpawnersESP", true)
+			ply:ChatPrint( "Enabled Spawner ESP" )
 		end
 	end )
 end
