@@ -14,6 +14,8 @@ include( "database.lua" )
 include( "damage_daddy.lua" )
 include( "monster_daddy.lua" )
 include( "sh_util.lua" )
+include( "sv_util.lua" )
+include( "game_controller.lua" )
 
 local CreatorSteamID = {
 	["STEAM_0:1:45153092"] = true, // Paul
@@ -24,6 +26,7 @@ function GM:Initialize()
 	self.BaseClass.Initialize( self )
 	ModularCombatDB:databaseCheck()
 	print("Finished loading Modular Combat Serverside")
+	GAMEMODE:PreGameStart()
 end
 
 function GM:ShutDown()
@@ -63,19 +66,6 @@ function GM:PlayerShouldTakeDamage( ply, att )// Friendly fire is OFF
 		end
 	end
 	return true
-end
-
-function GM:PlayerHurt( ply, att, hp, dt )
-	timer.Destroy( "ModCombHPRegen_"..ply:UniqueID() )
-	timer.Create( "ModCombHPRegen_"..ply:UniqueID(), ply:GetModHealthRegenTime(), 100 - ply:Health(), function()
-		if IsValid( ply ) then
-			if ply:Health()>= ply:GetMaxHealth() then
-				timer.Destroy( "ModCombHPRegen_"..ply:UniqueID() )
-			else
-				ply:SetHealth( math.Clamp( ply:Health() + ply:GetModHealthRegenAmount(), 0, ply:GetMaxHealth() ) )
-			end
-		end
-	end )
 end
 
 function GM:PlayerDeath( ply, inf, att )

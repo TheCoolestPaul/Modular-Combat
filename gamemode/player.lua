@@ -1,5 +1,6 @@
 local plyMeta = FindMetaTable("Player")
 AccessorFunc(plyMeta, "active_char", "ActiveCharNum", FORCE_NUMBER)
+AccessorFunc(plyMeta, "modcombat_armor", "ModArmor", FORCE_NUMBER)
 
 if SERVER then
 	playerData = {
@@ -33,7 +34,7 @@ if SERVER then
 		end
 	end
 	function plyMeta:SetModCombatTeam( teamNum )
-		if not ( teamNum >= 1 and teamNum <= 3 ) then // Eliminate out of bound options
+		if not ( teamNum >= 1 and teamNum <= 3 ) then
 			return false
 		end
 
@@ -44,11 +45,9 @@ if SERVER then
 			self:SetPlayerColor( Vector( 0.6,0,0 ) )
 		elseif teamNum == 2 then// Resistance
 			self:SetPlayerColor( Vector( 0,0.5,0 ) )
-		else// Aperature
+		elseif teamNum == 3 then
 			self:SetPlayerColor( Vector( 0,0.5,1.0 ) )
 		end
-		self:SetNWBool("ShouldShowHUD", true)
-		self:Spawn()
 		return true
 	end
 
@@ -61,6 +60,8 @@ if SERVER then
 		ply:SetNWInt( "Level", playerData[ply:SteamID()][ply:GetActiveCharNum()].Level )
 		ply:SetNWInt( "EXPNext", playerData[ply:SteamID()][ply:GetActiveCharNum()].Level*100 )
 		ply:SetNWInt( "EXP", playerData[ply:SteamID()][ply:GetActiveCharNum()].EXP )
+		ply:SetNWBool("ShouldShowHUD", true)
+		ply:Spawn()
 	end )
 
 	util.AddNetworkString( "FinsihedCharCreation" )
@@ -85,6 +86,8 @@ if SERVER then
 		ply:SetActiveCharNum( charNum )
 		ply:SetModCombatTeam( teamNum )
 		ply:SetModel( model )
+		ply:SetNWBool("ShouldShowHUD", true)
+		ply:Spawn()
 
 	end )
 

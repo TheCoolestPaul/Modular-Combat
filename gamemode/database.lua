@@ -1,4 +1,4 @@
-	ModularCombatDB = {}
+ModularCombatDB = {}
 function ModularCombatDB:databaseCheck()
 	if sql.TableExists("modcombat") then
 		print("SQL databases exist for Modular Combat")

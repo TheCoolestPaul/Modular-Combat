@@ -1,5 +1,12 @@
 function DrawLevels()
 	if LocalPlayer():GetNWBool("ShouldShowHUD", false) then
+		// BEGIN: GAME TIMER
+		if GetGlobalBool( "InRound", false ) then
+			surface.SetDrawColor( 100,100,100,100 )
+			surface.DrawRect( ScrW()/2-250, 10, 500, 65 )//background
+			draw.SimpleTextOutlined( "Round Time: "..util.ToMinutesSeconds( CurTime()-GetGlobalFloat( "RoundStartTime", 0 ) ), "DermaLarge", ScrW()/2, 40, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, color_black )
+		end
+		
 		// BEGIN: EXP/LEVEL
 		surface.SetDrawColor( 100,100,100,100 )
 		surface.DrawRect( ScrW()/2-250, ScrH()-70, 500, 65 )//background

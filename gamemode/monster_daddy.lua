@@ -52,11 +52,11 @@ end
 local lastSpawnTime = 0
 hook.Add( "Think", "MonsterDaddy_SpawnMonster", function()
 	if CurTime() < lastSpawnTime or MonsterCount > MaxMonsters or #MonsterSpawns <= 0 then return end
+	if not GAMEMODE:InRound() then return end
 	local pickSpawns = math.Round(#MonsterSpawns/2)
 	for i=1,pickSpawns do
 		spawnAMonster()
 		if MonsterCount >= MaxMonsters then
-			print("HIT MAX MONSTERS")
 			break
 		end
 	end

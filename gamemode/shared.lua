@@ -1,8 +1,16 @@
 GM.Name = "Modular Combat"
 GM.Version = "0.0.1"
 GM.Email = "N/A"
-GM.Website = "N/A"
+GM.Website = "https://github.com/TheCoolestPaul/Modular-Combat"
 GM.Author = "TheCoolestPaul"
+
+GM.VotingDelay = 10	-- Delay between end of game, and vote. if you want to display any extra screens before the vote pops up
+GM.GameLength = 30 -- 5 Minutes
+GM.MaximumDeathLength = 0 -- Player will repspawn if death length > this (can be 0 to disable)
+GM.MinimumDeathLength = 2 -- Player has to be dead for at least this long
+GM.GamePreStartTime = 5 -- Preperation time before a game starts
+GM.PostGameLength = 10	-- Seconds to show the 'x team won!' screen at the end of a game
+
 
 team.SetUp( 0, "Monsters", Color( 255,0,0 ), false )
 team.SetUp( 1, "Combie", Color( 0,0,255 ), false )
