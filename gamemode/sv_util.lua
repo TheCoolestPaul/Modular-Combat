@@ -1,7 +1,3 @@
---[[---------------------------------------------------------
-   Name: UTIL_FreezeAllPlayers
-   Desc: Freeze all non-spectators.
----------------------------------------------------------]]
 function UTIL_FreezeAllPlayers()
 
 	for k,v in pairs( player.GetAll() ) do
@@ -12,10 +8,6 @@ function UTIL_FreezeAllPlayers()
 
 end
 
---[[---------------------------------------------------------
-   Name: UTIL_UnFreezeAllPlayers
-   Desc: Removes frozen flag from all players.
----------------------------------------------------------]]
 function UTIL_UnFreezeAllPlayers()
 
 	for k,v in pairs( player.GetAll() ) do

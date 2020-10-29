@@ -126,4 +126,11 @@ if SERVER then
 			ply:ChatPrint( "Enabled Spawner ESP" )
 		end
 	end )
+
+	util.AddNetworkString( "ModCombGiveSpawnTool" )
+	net.Receive( "ModCombGiveSpawnTool", function( len, ply )
+		if not ply:IsAdmin() or not ply:IsSuperAdmin() then return end
+		if ply:HasWeapon( "weapon_spawnpoint_tool" ) then return end
+		ply:Give( "weapon_spawnpoint_tool" )
+	end )
 end

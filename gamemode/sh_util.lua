@@ -9,7 +9,7 @@ if CLIENT then
 	LoadedSounds = {} -- this table caches existing CSoundPatches
 end
 
-local function ReadSound( FileName )
+function ReadSound( FileName )
 	local sound
 	local filter
 	if SERVER then

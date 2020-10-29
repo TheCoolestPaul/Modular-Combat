@@ -5,17 +5,20 @@ AddCSLuaFile( "menus/cl_character.lua" )
 AddCSLuaFile( "menus/cl_admin.lua" )
 AddCSLuaFile( "menus/cl_hud.lua" )
 AddCSLuaFile( "sh_util.lua" )
+AddCSLuaFile( "game_controller/sh.lua" )
+AddCSLuaFile( "game_controller/cl.lua" )
 
 include( "shared.lua" )
 include( "player.lua" )
 include( "spawnpoints.lua" )
-include( "playerData.lua" )
+include( "player_data.lua" )
 include( "database.lua" )
 include( "damage_daddy.lua" )
 include( "monster_daddy.lua" )
 include( "sh_util.lua" )
 include( "sv_util.lua" )
-include( "game_controller.lua" )
+include( "game_controller/sv.lua" )
+include( "game_controller/sh.lua" )
 
 local CreatorSteamID = {
 	["STEAM_0:1:45153092"] = true, // Paul

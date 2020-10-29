@@ -12,7 +12,7 @@ function ENT:Initialize()
 end
 
 function ENT:Think()
-	if CurTime() < self:GetLastSpawn() then return end
+	if CurTime() < self:GetLastSpawn() or not GAMEMODE:InRound() then return end
 	local dropClass = PickupDrops[math.random(#PickupDrops)]
 	if IsValid( self:GetLastEntity() ) then
 		if dropClass == self:GetLastEntity():GetClass() then

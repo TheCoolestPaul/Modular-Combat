@@ -2,7 +2,7 @@
 {
 	"base"		"base"
     "title"     "Modular Combat"
-    "version"   "0.0.1"
+    "version"   "0.8.5"
     "menusystem"	"1"
     "workshopid"    ""
     "settings"

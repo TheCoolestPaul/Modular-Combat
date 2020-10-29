@@ -5,7 +5,7 @@ function ModularCombatDB:databaseCheck()
 		return true
 	else
 		if (!sql.TableExists("modcombat")) then
-			local query = "CREATE TABLE modcombat ( SteamID varchar(255) NOT NULL UNIQUE, Char1 mediumtext, Char2 mediumtext, Char3 mediumtext );"
+			local query = "CREATE TABLE modcombat ( SteamID varchar(255) NOT NULL UNIQUE, Char1 mediumtext, Char2 mediumtext, Char3 mediumtext, PRIMARY KEY(SteamID) );"
 			result = sql.Query(query)
 			if result != nil then
 				print("[SQL ERROR]: "..sql.LastError())
@@ -24,17 +24,17 @@ function ModularCombatDB:savePlayerData( ply )
 		for k,v in pairs( playerData[sid] ) do
 			jsons[k] = util.TableToJSON(v)
 		end
-		local feeler = sql.Query("SELECT * FROM modcombat WHERE SteamID='"..sid.."'")
+		local feeler = sql.Query( "SELECT * FROM modcombat WHERE SteamID='"..sid.."'" )
 		if feeler == nil then
-			local query1 = sql.Query("INSERT INTO modcombat (SteamID) VALUES ('"..sid.."')")
+			local query1 = sql.Query( "INSERT INTO modcombat (SteamID) VALUES ('"..sid.."')" )
 			if query1==false then
-				print("SQL ERROR QUERY1="..sql.LastError())
+				print( "SQL ERROR QUERY1="..sql.LastError() )
 			end
 		end
 		for k,v in pairs( jsons ) do
-			local query2 = sql.Query("UPDATE modcombat SET Char"..k.."='"..v.."' WHERE SteamID='"..sid.."'")
+			local query2 = sql.Query( "UPDATE modcombat SET Char"..k.."='"..v.."' WHERE SteamID='"..sid.."'" )
 			if query2==false then
-				print("SQL ERROR QUERY2="..sql.LastError())
+				print( "SQL ERROR QUERY2="..sql.LastError() )
 			end
 		end
 	end
@@ -43,12 +43,12 @@ end
 function ModularCombatDB:deletePlayer( ply, num )
 	if IsValid( ply ) then
 		local sid = ply:SteamID()
-		local result = sql.Query("UPDATE modcombat SET Char"..tostring( num ).." = NULL WHERE SteamID = '"..sid.."'")
+		local result = sql.Query( "UPDATE modcombat SET Char"..tostring( num ).." = NULL WHERE SteamID = '"..sid.."'" )
 		if result != nil then
-			print("RESULT: "..result)
+			print( "RESULT: "..result )
 		end
 	else
-		print("[ERROR] Tried to removed an invalid char from the database with a null player!")
+		print( "[ERROR] Tried to removed an invalid char from the database with a null player!" )
 	end
 end
 

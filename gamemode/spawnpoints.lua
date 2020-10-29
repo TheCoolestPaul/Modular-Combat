@@ -1,4 +1,3 @@
-MonsterSpawns = {}
 spawnpoints = {
 	players = {},
 	monsters = {},
@@ -9,14 +8,14 @@ spawnpoints = {
 function AddSpawn( typ, pos, ang )
 	local entClass = "spawnpoint_players"
 	local monster = false
-	if typ == "monsters" then
+	if string.lower( typ ) == "monsters" then
 		entClass = "spawnpoint_monsters"
 		monster = true
-	elseif typ == "weapons" then
+	elseif string.lower( typ ) == "weapons" then
 		entClass = "spawnpoint_weapons"
-	elseif typ == "ammo" then
+	elseif string.lower( typ ) == "ammo" then
 		entClass = "spawnpoint_ammo"
-	elseif typ == "drops" then
+	elseif string.lower( typ ) == "drops" then
 		entClass = "spawnpoint_drops"
 	end
 	local ent = ents.Create(entClass)
@@ -24,11 +23,7 @@ function AddSpawn( typ, pos, ang )
 	ent:SetPos(pos)
 	ent:SetAngles(ang)
 	ent:Spawn()
-	ent:DropToFloor()
-	table.insert(spawnpoints[typ], ent)
-	if monster then
-		table.insert(MonsterSpawns, ent)
-	end
+	table.insert(spawnpoints[string.lower( typ )], ent)
 end
 util.AddNetworkString( "ModComb_AddSpawner" )
 net.Receive( "ModComb_AddSpawner", function( len, ply )
@@ -52,11 +47,25 @@ net.Receive( "ModComb_ClearSpawns", function( len, ply)
 	ply:ChatPrint( "Cleared all spawns." )
 end )
 
+function RemoveSpawn( ent )
+	if ent:GetClass() == "spawnpoint_ammo" then
+		table.RemoveByValue(spawnpoints.ammo, ent)
+	elseif ent:GetClass() == "spawnpoint_drops" then
+		table.RemoveByValue(spawnpoints.drops, ent)
+	elseif ent:GetClass() == "spawnpoint_monsters" then
+		table.RemoveByValue(spawnpoints.monsters, ent)
+	elseif ent:GetClass() == "spawnpoint_players" then
+		table.RemoveByValue(spawnpoints.players, ent)
+	elseif ent:GetClass() == "spawnpoint_weapons" then
+		table.RemoveByValue(spawnpoints.weapons, ent)
+	end
+	ent:Remove()
+end
+
 function ClearSpawnData()
 	if file.Exists( "modular_comat/map_data/" ..string.lower(game.GetMap()).. ".txt", "DATA" ) then
 		file.Delete( "modular_comat/map_data/" ..string.lower(game.GetMap()).. ".txt" )
 	end
-	table.Empty(MonsterSpawns)
 	for k, v in pairs(spawnpoints.players) do
 		if IsValid(v) then
 			v:Remove()
@@ -178,10 +187,7 @@ function LoadSpawns()
 					phys:Wake()
 					phys:EnableMotion(false)
 				end
-
-				if monster then
-					table.insert(MonsterSpawns, ent)
-				end
+				table.insert(spawnpoints[string.lower( v.type )], ent)
 			end
 
             print( "[Modular Combat]: Finished loading spawn data for map "..string.lower(game.GetMap()) )

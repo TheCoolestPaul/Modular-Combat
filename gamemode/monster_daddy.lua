@@ -1,6 +1,12 @@
 local MaxMonsters = 90 // TODO: mess with this <3
 MonsterCount = 0
-MonsterSpawns = {}
+spawnpoints = {
+	players = {},
+	monsters = {},
+	weapons = {},
+	ammo = {},
+	drops = {},
+}
 
 local function SetRandomTargetForNPC( npc )
 	if ( npc:IsNPC() ) then
@@ -19,11 +25,11 @@ local function SetRandomTargetForNPC( npc )
 end
 
 local function randomMonsterSpawner()
-	local pickedSpawner = MonsterSpawns[math.random(#MonsterSpawns)]
+	local pickedSpawner = spawnpoints.monsters[math.random(#spawnpoints.monsters)]
 	local shits = ents.FindInSphere(pickedSpawner:GetPos(), 2000)
 	for k,ent in pairs(shits) do
 		if ent:IsPlayer() then
-			return MonsterSpawns[math.random(#MonsterSpawns)] // picks a dif spawn if player is near
+			return spawnpoints.monsters[math.random(#spawnpoints.monsters)] // picks a dif spawn if player is near
 		end
 	end
 	return pickedSpawner
@@ -38,7 +44,6 @@ local function spawnAMonster(spawnNum)
 	monster:SetMaxHealth( monster:GetMaxHealth() + ( monster:GetMaxHealth()*( 0.1*monster:GetNWInt("Level", 1) ) ) )
 	monster:SetHealth(monster:GetMaxHealth())
 	monster:SetPos( Vector( spawn:GetPos().x, spawn:GetPos().y, spawn:GetPos().z + 10 ) )
-	monster:SetAngles( spawn:GetAngles() )
 	if monsterClass == "npc_vortigaunt" then
 		monster:AddRelationship("player D_HT 99")
 	end
@@ -51,9 +56,9 @@ end
 
 local lastSpawnTime = 0
 hook.Add( "Think", "MonsterDaddy_SpawnMonster", function()
-	if CurTime() < lastSpawnTime or MonsterCount > MaxMonsters or #MonsterSpawns <= 0 then return end
-	if not GAMEMODE:InRound() then return end
-	local pickSpawns = math.Round(#MonsterSpawns/2)
+	if CurTime() < lastSpawnTime or MonsterCount > MaxMonsters or #spawnpoints.monsters <= 0 then return end
+	if not GetGlobalBool( "InRound", false ) then return end
+	local pickSpawns = math.Round(#spawnpoints.monsters/2)
 	for i=1,pickSpawns do
 		spawnAMonster()
 		if MonsterCount >= MaxMonsters then

@@ -149,5 +149,14 @@ hook.Add( "PlayerBindPress", "PlayerBindPressExample", function( ply, bind, pres
 			net.SendToServer()
 		end
 
+		local spawnTool = vgui.Create( "DButton", MainFrame )
+		spawnTool:SetSize( 200, 50 )
+		spawnTool:SetPos( 900, 650 )
+		spawnTool:SetText( "Give Spawn Tool Editor" )
+		function spawnTool:DoClick()
+			net.Start( "ModCombGiveSpawnTool" )
+			net.SendToServer()
+		end
+
 	end
 end )

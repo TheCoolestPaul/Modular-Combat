@@ -12,7 +12,7 @@ function ENT:Initialize()
 end
 
 function ENT:Think()
-	if CurTime() < self:GetLastSpawn() then return end
+	if CurTime() < self:GetLastSpawn() or not GAMEMODE:InRound() then return end
 	local wepClass = PickupWeapons[math.random(#PickupWeapons)]
 	if IsValid( self:GetLastEntity() ) then
 		if wepClass == self:GetLastEntity():GetClass() then
