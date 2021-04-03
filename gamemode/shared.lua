@@ -1,5 +1,5 @@
 GM.Name = "Modular Combat"
-GM.Version = "0.8.5"
+GM.Version = "0.8.7"
 GM.Email = "N/A"
 GM.Website = "https://github.com/TheCoolestPaul/Modular-Combat"
 GM.Author = "TheCoolestPaul"
