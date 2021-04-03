@@ -4,18 +4,19 @@ spawnpoints = {
 	weapons = {},
 	ammo = {},
 	drops = {},
+	big_monsters = {},
 }
 function AddSpawn( typ, pos, ang )
 	local entClass = "spawnpoint_players"
-	local monster = false
 	if string.lower( typ ) == "monsters" then
 		entClass = "spawnpoint_monsters"
-		monster = true
+	elseif string.lower( typ ) == "big_monsters" then
+		entClass = "spawnpoint_big_monsters"
 	elseif string.lower( typ ) == "weapons" then
 		entClass = "spawnpoint_weapons"
 	elseif string.lower( typ ) == "ammo" then
 		entClass = "spawnpoint_ammo"
-	elseif string.lower( typ ) == "drops" then
+	else
 		entClass = "spawnpoint_drops"
 	end
 	local ent = ents.Create(entClass)
@@ -54,6 +55,8 @@ function RemoveSpawn( ent )
 		table.RemoveByValue(spawnpoints.drops, ent)
 	elseif ent:GetClass() == "spawnpoint_monsters" then
 		table.RemoveByValue(spawnpoints.monsters, ent)
+	elseif ent:GetClass() == "spawnpoint_big_monsters" then
+		table.RemoveByValue(spawnpoints.big_monsters, ent)
 	elseif ent:GetClass() == "spawnpoint_players" then
 		table.RemoveByValue(spawnpoints.players, ent)
 	elseif ent:GetClass() == "spawnpoint_weapons" then
@@ -94,7 +97,7 @@ function ClearSpawnData()
 	for k,tab in pairs(spawnpoints) do
 		table.Empty(tab)
 	end
-	print("All of the spawns were deleted!")
+	print("[ModularCombat] Map Manager: All of the spawns were deleted!")
 end
 
 function SaveSpawns()
@@ -112,6 +115,15 @@ function SaveSpawns()
 		if IsValid(v) then
 			table.insert(data, {
 				type = "monsters",
+				pos = v:GetPos(),
+				ang = v:GetAngles()
+			})
+		end
+	end
+	for k, v in pairs(spawnpoints.big_monsters) do
+		if IsValid(v) then
+			table.insert(data, {
+				type = "big_monsters",
 				pos = v:GetPos(),
 				ang = v:GetAngles()
 			})

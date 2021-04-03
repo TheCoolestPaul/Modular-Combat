@@ -53,7 +53,7 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
-	self:EmitSound( self.Primary.Sound )
+	self:EmitSound( self.Secondary.Sound )
 	if ( CLIENT ) then return end
 	for _,ent in pairs( ents.FindInSphere( self.Owner:GetEyeTrace().HitPos, 10.0 ) ) do
 		if IsSpawner( ent ) then
