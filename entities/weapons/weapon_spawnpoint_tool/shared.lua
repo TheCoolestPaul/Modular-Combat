@@ -27,6 +27,7 @@ SWEP.SpawnTypes = {
 	"weapons",
 	"drops",
 	"monsters",
+	"monsters_big"
 }
 
 SWEP.CurrentSpawnType = 1
@@ -50,7 +51,7 @@ function SWEP:PrimaryAttack()
 	if ( CLIENT ) then return end
 	AddSpawn( self.SpawnTypes[self.CurrentSpawnType], self.Owner:GetEyeTrace().HitPos, self.Owner:GetAngles() )
 end
- 
+
 function SWEP:SecondaryAttack()
 	self:EmitSound( self.Primary.Sound )
 	if ( CLIENT ) then return end
