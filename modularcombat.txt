@@ -2,7 +2,7 @@
 {
 	"base"		"base"
     "title"     "Modular Combat"
-    "version"   "0.8.8"
+    "version"   "0.8.9"
     "menusystem"	"1"
     "workshopid"    ""
 		"category"			"pve"

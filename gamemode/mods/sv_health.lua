@@ -5,11 +5,14 @@ health = {
 }
 
 function GM:PlayerHurt( ply, att, hp, dt )
-	timer.Destroy( "ModCombHPRegen_"..ply:UniqueID() )
-	timer.Create( "ModCombHPRegen_"..ply:UniqueID(), ply:GetModHealthRegenTime(), 100 - ply:Health(), function()
+	local ident = "ModCombHPRegen_"..ply:UniqueID()
+	if timer.Exists(ident) then
+		timer.Destroy( ident )
+	end
+	timer.Create( ident, ply:GetModHealthRegenTime(), 100 - ply:Health(), function()
 		if IsValid( ply ) then
-			if ply:Health()>= ply:GetMaxHealth() then
-				timer.Destroy( "ModCombHPRegen_"..ply:UniqueID() )
+			if ply:Health() >= ply:GetMaxHealth() then
+				timer.Destroy( ident )
 			else
 				ply:SetHealth( math.Clamp( ply:Health() + ply:GetModHealthRegenAmount(), 0, ply:GetMaxHealth() ) )
 			end
@@ -20,7 +23,7 @@ end
 function GM:PlayerDeath( ply, inf, att )
 	timer.Destroy( "ModCombHPRegen_"..ply:UniqueID() )
 	if ply != att then
-		if att:IsPlayer() and IsValid( att ) then
+		if IsValid( att ) and att:IsPlayer() then
 			print("player killed player")
 		end
 	end
