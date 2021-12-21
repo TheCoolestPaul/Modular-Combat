@@ -27,7 +27,7 @@ SWEP.SpawnTypes = {
 	"weapons",
 	"drops",
 	"monsters",
-	"monsters_big"
+	"big_monsters",
 }
 
 SWEP.CurrentSpawnType = 1

@@ -1,22 +1,23 @@
 spawnpoints = {
-	players = {},
-	monsters = {},
-	weapons = {},
-	ammo = {},
-	drops = {},
-	big_monsters = {},
+	["players"] = {},
+	["monsters"] = {},
+	["weapons"] = {},
+	["ammo"] = {},
+	["drops"] = {},
+	["big_monsters"] = {},
 }
 function AddSpawn( typ, pos, ang )
+	typ = string.lower(typ)
 	local entClass = "spawnpoint_players"
-	if string.lower( typ ) == "monsters" then
+	if typ == "monsters" then
 		entClass = "spawnpoint_monsters"
-	elseif string.lower( typ ) == "big_monsters" then
+	elseif typ == "big_monsters" then
 		entClass = "spawnpoint_big_monsters"
-	elseif string.lower( typ ) == "weapons" then
+	elseif typ == "weapons" then
 		entClass = "spawnpoint_weapons"
-	elseif string.lower( typ ) == "ammo" then
+	elseif typ == "ammo" then
 		entClass = "spawnpoint_ammo"
-	else
+	elseif typ == "drops" then
 		entClass = "spawnpoint_drops"
 	end
 	local ent = ents.Create(entClass)
@@ -24,29 +25,12 @@ function AddSpawn( typ, pos, ang )
 	ent:SetPos(pos)
 	ent:SetAngles(ang)
 	ent:Spawn()
-	table.insert(spawnpoints[string.lower( typ )], ent)
+	if spawnpoints[typ] == nil then
+		print("ERROR for spawnpoint type ("..typ..")")
+	else
+		table.insert(spawnpoints[typ], ent)
+	end
 end
-util.AddNetworkString( "ModComb_AddSpawner" )
-net.Receive( "ModComb_AddSpawner", function( len, ply )
-	if not ply:IsAdmin() or not ply:IsSuperAdmin() then return end
-	local typ = net.ReadString()
-	AddSpawn( typ, net.ReadVector(), net.ReadAngle() )
-	ply:ChatPrint( "Made a "..typ.." spawner")
-end )
-
-util.AddNetworkString( "ModComb_SaveSpawns" )
-net.Receive( "ModComb_SaveSpawns", function( len, ply )
-	if not ply:IsAdmin() or not ply:IsSuperAdmin() then return end
-	SaveSpawns()
-	ply:ChatPrint( "Saved all spawns." )
-end )
-
-util.AddNetworkString( "ModComb_ClearSpawns" )
-net.Receive( "ModComb_ClearSpawns", function( len, ply)
-	if not ply:IsAdmin() or not ply:IsSuperAdmin() then return end
-	ClearSpawnData()
-	ply:ChatPrint( "Cleared all spawns." )
-end )
 
 function RemoveSpawn( ent )
 	if ent:GetClass() == "spawnpoint_ammo" then
@@ -75,6 +59,11 @@ function ClearSpawnData()
 		end
 	end
 	for k, v in pairs(spawnpoints.monsters) do
+		if IsValid(v) then
+			v:Remove()
+		end
+	end
+	for k,v in pairs(spawnpoints.big_monsters) do
 		if IsValid(v) then
 			v:Remove()
 		end
@@ -177,10 +166,10 @@ function LoadSpawns()
 		if data and table.Count(data) > 0 then
 			for k, v in pairs(data) do
 				local entClass = "spawnpoint_players"
-				local monster = false
 				if v.type == "monsters" then
 					entClass = "spawnpoint_monsters"
-					monster = true
+				elseif v.type == "big_monsters" then
+					entClass = "spawnpoint_big_monsters"
 				elseif v.type == "weapons" then
 					entClass = "spawnpoint_weapons"
 				elseif v.type == "ammo" then
