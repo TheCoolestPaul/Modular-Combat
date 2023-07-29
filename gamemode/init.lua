@@ -21,8 +21,8 @@ include( "game_controller/sv.lua" )
 include( "game_controller/sh.lua" )
 
 local CreatorSteamID = {
-	["STEAM_0:1:45153092"] = true, // Paul
-	["STEAM_0:1:87697028"] = true, // Crack Dealer
+	["STEAM_0:1:45153092"] = true, -- Paul
+	["STEAM_0:1:87697028"] = true, -- Crack Dealer
 }
 
 function GM:Initialize()
@@ -59,7 +59,7 @@ function GM:PlayerDisconnected( ply )
     game.CleanUpMap()
 end
 
-function GM:PlayerShouldTakeDamage( ply, att )// Friendly fire is OFF
+function GM:PlayerShouldTakeDamage( ply, att )-- Friendly fire is OFF
 	if att:IsPlayer() then
 		if ply==att then
 			return true
@@ -82,7 +82,7 @@ function GM:PlayerDeath( ply, inf, att )
 end
 
 function GM:PlayerLoadout( ply )
-	// Default Loadout
+	-- Default Loadout
 	if ply:Team() > 0 and ply:Team() < 4 then
 		ply:GodDisable()
 		if not ply:IsSuitEquipped() then

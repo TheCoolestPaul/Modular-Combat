@@ -1,4 +1,4 @@
-local MaxMonsters = 90 // TODO: mess with this <3
+local MaxMonsters = 90 -- TODO: mess with this <3
 MonsterCount = 0
 spawnpoints = {
 	players = {},
@@ -29,7 +29,7 @@ local function randomMonsterSpawner()
 	local shits = ents.FindInSphere(pickedSpawner:GetPos(), 2000)
 	for k,ent in pairs(shits) do
 		if ent:IsPlayer() then
-			return spawnpoints.monsters[math.random(#spawnpoints.monsters)] // picks a dif spawn if player is near
+			return spawnpoints.monsters[math.random(#spawnpoints.monsters)] -- picks a dif spawn if player is near
 		end
 	end
 	return pickedSpawner

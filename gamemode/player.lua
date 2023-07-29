@@ -41,9 +41,9 @@ if SERVER then
 		PrintMessage(HUD_PRINTTALK, self:Nick().." has joined team "..team.GetName(teamNum))
 		self:SetTeam( teamNum )
 
-		if teamNum == 1 then// Combine Team
+		if teamNum == 1 then-- Combine Team
 			self:SetPlayerColor( Vector( 0.6,0,0 ) )
-		elseif teamNum == 2 then// Resistance
+		elseif teamNum == 2 then-- Resistance
 			self:SetPlayerColor( Vector( 0,0.5,0 ) )
 		elseif teamNum == 3 then
 			self:SetPlayerColor( Vector( 0,0.5,1.0 ) )

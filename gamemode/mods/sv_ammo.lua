@@ -2,14 +2,14 @@ baseMaxAmmo = {
 	["Pistol"] = 180,
 	["357"] = 36,
 	["SMG1"] = 180,
-	["AR2"] = 120, // Pulse Rifle
+	["AR2"] = 120, -- Pulse Rifle
 	["Buckshot"] = 24, 
-	["XBowBolt"] = 15, // Crossbow
+	["XBowBolt"] = 15, -- Crossbow
 	["Grenade"] = 3,
 	["SMG1_Grenade"] = 3,
 	["slam"] = 3,
 	["RPG_Round"] = 3,
-	["AR2AltFire"] = 3, // Pulse Rifle Ball
+	["AR2AltFire"] = 3, -- Pulse Rifle Ball
 }
 
 PickupAmmo = {

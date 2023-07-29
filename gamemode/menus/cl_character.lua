@@ -246,8 +246,8 @@ function playAs(creation, charNum)
 			draw.RoundedBox( 0, 0, 0, w, h, Color( 0, 0, 0, 200 ) )
 		end
 
-		local activeTab = 1 // combine
-		local activeModel = 1 // first model
+		local activeTab = 1 -- combine
+		local activeModel = 1 -- first model
 
 		local ModelSelectorFrame = vgui.Create( "DFrame", CreationFrame )
 		ModelSelectorFrame:SetTitle( "" )

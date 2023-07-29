@@ -5,8 +5,8 @@ GM.Website = "https://github.com/TheCoolestPaul/Modular-Combat"
 GM.Author = "TheCoolestPaul"
 
 GM.VotingDelay = 10	-- Delay between end of game, and vote. if you want to display any extra screens before the vote pops up
-GM.VotingTime = 20 -- Seconds to vote
-GM.GameLength = 4 -- Minutes per game
+GM.VotingTime = 30 -- Seconds to vote
+GM.GameLength = 10 -- Minutes per game
 GM.MaximumDeathLength = 0 -- Player will repspawn if death length > this (can be 0 to disable)
 GM.MinimumDeathLength = 2 -- Player has to be dead for at least this long
 GM.GamePreStartTime = 10 -- Seconds - Preperation time before a game starts

@@ -1,5 +1,9 @@
 DMGTable = {}
 
+function ClearDamageTable()
+	DMGTable = {}
+end
+
 hook.Add( "PostEntityTakeDamage", "Damage_Daddy_TakeDamage", function( ent, dmg, took )
 	if took and not ent:IsPlayer() then
 		att = dmg:GetAttacker()
@@ -28,7 +32,7 @@ hook.Add( "OnNPCKilled", "Damage_Daddy_Killed", function( npc, att, _ )
 				local baseEXP = GetMonsterBaseEXP( npc:GetClass() )
 				local monsterLevel = npc:GetNWInt("Level", 1)
 				if baseEXP then
-					baseEXP = baseEXP + (baseEXP * (0.1*npc:GetNWInt("Level", 1) ) )
+					baseEXP = baseEXP + (baseEXP * (0.2*monsterLevel ) )
 					local expTotal = math.Max(0, math.Round( ( dmgPerc ) * baseEXP ) )
 					AddModExp( ent, expTotal )
 					ent:ChatPrint("You dealt "..math.Round( dmgPerc*100 ).."% of the damage to "..npc:GetClass().." LVL "..monsterLevel.." and earned "..expTotal.." exp")
@@ -41,7 +45,7 @@ hook.Add( "OnNPCKilled", "Damage_Daddy_Killed", function( npc, att, _ )
 		local baseEXP = GetMonsterBaseEXP( npc:GetClass() )
 		local monsterLevel = npc:GetNWInt("Level", 1)
 		if baseEXP then
-			baseEXP = math.Round( baseEXP + (baseEXP * (0.1*npc:GetNWInt("Level", 1) ) ) )
+			baseEXP = math.Round( baseEXP + (baseEXP * (0.2*monsterLevel ) ) )
 			AddModExp( att, baseEXP )
 			att:ChatPrint("You dealt 100% of the damage to "..npc:GetClass().." LVL "..monsterLevel.." and earned "..baseEXP.." exp")
 		else

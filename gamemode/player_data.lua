@@ -19,9 +19,9 @@ hook.Add( "Think", "AutoSavePlayers", function()
 	if CurTime() <= lastSQLSave or #player.GetHumans() == 0 then return end
 	print("Sending player data to SQL")
 	for _,ply in pairs( player.GetHumans() ) do
-		if IsValid( ply ) and ply:GetActiveCharNum() != 0 then // Only if they're valid and in-game
+		if IsValid( ply ) and ply:GetActiveCharNum() != 0 then -- Only if they're valid and in-game
 			ModularCombatDB:savePlayerData( ply )
 		end
 	end
-	lastSQLSave = CurTime() + ( 5 * 60 ) // 5 minutes
+	lastSQLSave = CurTime() + ( 5 * 60 ) -- 5 minutes
 end )

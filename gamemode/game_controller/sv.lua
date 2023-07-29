@@ -59,11 +59,11 @@ end
 
 function GM:EndOfGame()
 	if GetGlobalBool("IsEndOfGame", false) then return end
-	print("GAME NEEDS TO END")
 	GAMEMODE:SetInRound( false )
 	UTIL_RemoveAllMonsters()
-	SetGlobalBool( "IsEndOfGame", true )
+	SetGlobal2Bool( "IsEndOfGame", true )
 	gamemode.Call("OnEndOfGame")
+	ClearDamageTable()
 	UTIL_FreezeAllPlayers()
 	timer.Simple( GAMEMODE.VotingDelay, function() GAMEMODE:StartMapVote() end )
 end
@@ -72,8 +72,8 @@ util.AddNetworkString( "BeginVote" )
 function GM:StartMapVote()
 	net.Start( "BeginVote" )
 	net.Broadcast()
-	timer.Simple( fretta_votetime:GetFloat(), function() GAMEMODE:FinishMapVote() end )
-	SetGlobalFloat( "VoteEndTime", CurTime() + fretta_votetime:GetFloat() )
+	timer.Simple( 0, function() GAMEMODE:FinishMapVote() end )
+	SetGlobalFloat( "VoteEndTime", CurTime() + 0 )
 end
 
 function GM:GetWinningWant()
@@ -83,7 +83,7 @@ function GM:GetWinningWant()
 	for k, ply in pairs( player.GetAll() ) do
 	
 		local want = ply:GetNWString( "Wants", nil )
-		if ( want && want != "" ) then
+		if ( want and not want == "" ) then
 			Votes[ want ] = Votes[ want ] or 0
 			Votes[ want ] = Votes[ want ] + 1			
 		end
@@ -117,7 +117,7 @@ util.AddNetworkString( "EndVoting" )
 function GM:FinishMapVote()
 	
 	GAMEMODE.WinningMap = GAMEMODE:GetWinningMap()
-	GAMEMODE:ClearPlayerWants()
+	--GAMEMODE:ClearPlayerWants()
 	
 	if self.WinningMap then
 

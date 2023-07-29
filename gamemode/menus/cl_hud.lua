@@ -1,9 +1,9 @@
 function DrawLevels()
 	if LocalPlayer():GetNWBool("ShouldShowHUD", false) then
-		// BEGIN: GAME TIMER
+		-- BEGIN: GAME TIMER
 		if GetGlobalBool( "InRound", false ) or GetGlobalBool( "InPreRound", false) then
 			surface.SetDrawColor( 100,100,100,100 )
-			surface.DrawRect( ScrW()/2-250, 10, 500, 65 )//background
+			surface.DrawRect( ScrW()/2-250, 10, 500, 65 )--background
 			if GetGlobalBool( "InRound", false) then
 				draw.SimpleTextOutlined( "Round Time: "..util.ToMinutesSeconds( CurTime()-GetGlobalFloat( "RoundStartTime", 0.0 ) ), "DermaLarge", ScrW()/2, 40, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, color_black )
 			elseif GetGlobalBool( "InPreRound", false) then
@@ -11,24 +11,24 @@ function DrawLevels()
 			end
 		end
 		
-		// BEGIN: EXP/LEVEL
+		-- BEGIN: EXP/LEVEL
 		surface.SetDrawColor( 100,100,100,100 )
-		surface.DrawRect( ScrW()/2-250, ScrH()-70, 500, 65 )//background
+		surface.DrawRect( ScrW()/2-250, ScrH()-70, 500, 65 )--background
 
 		surface.SetDrawColor( 0,255,0,100 )
-		surface.DrawRect( ScrW()/2-250, ScrH()-70, math.Clamp( ( (LocalPlayer():GetNWInt("EXP", 0)/LocalPlayer():GetNWInt("EXPNext", 100))*500 ) or 0, 0, 500), 65 )//xp
+		surface.DrawRect( ScrW()/2-250, ScrH()-70, math.Clamp( ( (LocalPlayer():GetNWInt("EXP", 0)/LocalPlayer():GetNWInt("EXPNext", 100))*500 ) or 0, 0, 500), 65 )--xp
 
 		draw.SimpleTextOutlined( "EXP: "..tostring( LocalPlayer():GetNWInt("EXP", 0) ).." / "..tostring( LocalPlayer():GetNWInt("EXPNext", 100) ), "DermaLarge", ScrW()/2, ScrH()-50, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, color_black )
 		draw.SimpleTextOutlined( "Level: "..tostring( LocalPlayer():GetNWInt("Level", 1) ), "DermaLarge", ScrW()/2, ScrH()-20, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, color_black )
 
 
-		// BEGIN: Health
+		-- BEGIN: Health
 
-		// BEGIN: Armor
+		-- BEGIN: Armor
 
-		// BEGIN: HEV Battery
+		-- BEGIN: HEV Battery
 
-		// BEGIN: Admin ESP
+		-- BEGIN: Admin ESP
 		if LocalPlayer():GetNWBool("ModCombAdminPlayerESP", false) and ( LocalPlayer():IsAdmin() or LocalPlayer():IsSuperAdmin() ) then
 			for _,v in ipairs ( player.GetAll() ) do
 				if v:Nick() != LocalPlayer():Nick() then
